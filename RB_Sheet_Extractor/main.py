@@ -2,6 +2,7 @@ import os
 import docx
 import re
 import openpyxl
+from openpyxl.styles import Font
 
 def extract_word_data(file_path):
     product_name = "N/A"
@@ -64,11 +65,11 @@ def extract_word_data(file_path):
         print(f"Error processing {file_path}: {e}")
         return None
 
-def process_folders_and_create_excel(root_folder, output_excel_file):
+def process_folders_and_create_excel(root_folder, output_excel_file):   
     workbook = openpyxl.Workbook()
     sheet = workbook.active
-    sheet.append(
-        [
+
+    cabecalhos = [
             "Nome do Produto",
             "Cliente",
             "Producao/Hora",
@@ -78,7 +79,12 @@ def process_folders_and_create_excel(root_folder, output_excel_file):
             "Lixa",
             "Inspecao e Embalagem",
         ]
-    )
+
+    sheet.append(cabecalhos)
+
+    bold_font = Font(bold=True)
+    for cell in sheet[1]:
+        cell.font = bold_font
 
     for current_folder, subfolders, files in os.walk(root_folder):
         for file_name in files:
