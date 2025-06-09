@@ -2,7 +2,7 @@ import os
 import docx
 import re
 import openpyxl
-from openpyxl.styles import Font
+from openpyxl.styles import Font, Alignment
 
 def extract_word_data(file_path):
     product_name = "N/A"
@@ -83,8 +83,15 @@ def process_folders_and_create_excel(root_folder, output_excel_file):
     sheet.append(cabecalhos)
 
     bold_font = Font(bold=True)
+    centralizar = Alignment(horizontal='center', vertical='center')
+
     for cell in sheet[1]:
         cell.font = bold_font
+        cell.alignment = centralizar
+
+    sheet.column_dimensions['A'].width = 51
+    for col in ['B','C','D','E','F','G','H']:
+        sheet.column_dimensions[col].width = 20
 
     for current_folder, subfolders, files in os.walk(root_folder):
         for file_name in files:
@@ -105,6 +112,8 @@ def process_folders_and_create_excel(root_folder, output_excel_file):
                             data["packaging_inspection"],
                         ]
                     )
+                    for cell in sheet[sheet.max_row]:
+                        cell.alignment = centralizar
                 else:
                     print(f"File {full_path} skipped due to extraction error.")
 
